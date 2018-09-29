@@ -15,7 +15,11 @@ private:
 public :
 	SQLpool();
 	//~SQLpool() {};
+	SQLpool(const SQLpool &) = delete;
+	SQLpool & operator=(const SQLpool &) = delete;
+	std::list<SQLConnect>::iterator p;
 	void setParameter(const char *, const char *, const char *, const char *, unsigned int);
 	const SQLConnect & getConn(const char *);
+	void pool_resize();
 
 };

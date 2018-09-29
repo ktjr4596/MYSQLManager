@@ -1,8 +1,8 @@
 #include "sqlheader.h"
 
 SQLpool::SQLpool() {
-	std::cout << "hi" << std::endl;
 	pool_list.resize(MAX_CONNECT);
+	p = pool_list.begin();
 }
 
 
@@ -15,8 +15,17 @@ void SQLpool::setParameter(const char * host, const char * user, const char * pw
 }
 
 const SQLConnect & SQLpool::getConn(const char * dbname) {
-	mysql_real_connect(*pool_list.begin(), pool_host, pool_user, pool_pw, dbname, 0, nullptr, 0);
-	pool_list.begin()->getadd();
+	if (p == pool_list.end())
+		pool_resize();
+		
 	
-	return *pool_list.begin();
+	mysql_real_connect(*p, pool_host, pool_user, pool_pw, dbname, 0, nullptr, 0);
+	p->getadd();
+	
+	return *p++;
+}
+
+void SQLpool::pool_resize() {
+	pool_list.resize(MAX_CONNECT * 2);
+	MAX_CONNECT *= 2;
 }
